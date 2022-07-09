@@ -5,6 +5,7 @@ from .models import Comment, FreeComment, Post, FreePost, GENDER_CHOICES, COUNT_
 from django.conf import settings
 from django.conf.urls.static import static
 from django.db.models import Q
+from accounts.models import User
 
 def home(request, posts_filtered=None):
     # posts = Post.objects.all()
@@ -52,11 +53,12 @@ def filterpost(request):
     return home(request, posts_filtered)
 
 def postcreate(request):
+    login_session = request.session.get('login_session', '')
     if request.method == 'POST' or request.method == 'FILES':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             obj = form.save(commit=False)
-            obj.author = request.session.get('login_session', '')
+            obj.author = User.objects.get(username=login_session)
             obj.save()
             return redirect('home')
     else:
@@ -88,11 +90,12 @@ def detail(request, post_id):
 
 # 댓글 저장
 def new_comment(request, post_id):
+    login_session = request.session.get('login_session', '')
     filled_form = CommentForm(request.POST)
     if filled_form.is_valid():
         finished_form = filled_form.save(commit=False)
         finished_form.post = get_object_or_404(Post, pk=post_id)
-        finished_form.author = request.session.get('login_session', '')
+        finished_form.author = User.objects.get(username=login_session)
         finished_form.save()
     return redirect('detail', post_id)
 
@@ -144,11 +147,12 @@ def filterfreepost(request):
 
 
 def freepostcreate(request):
+    login_session = request.session.get('login_session', '')
     if request.method == 'POST' or request.method == 'FILES':
         form = FreePostForm(request.POST, request.FILES)
         if form.is_valid():
             unfinished = form.save(commit=False)
-            unfinished.author = request.session.get('login_session', '')           # user 추가!
+            unfinished.author = User.objects.get(username=login_session)
             unfinished.save()
             return redirect('freehome')
     else:
@@ -181,11 +185,12 @@ def freedetail(request, post_id):
 
 
 def new_freecomment(request, post_id):
+    login_session = request.session.get('login_session', '')
     filled_form = FreeCommentForm(request.POST)
     if filled_form.is_valid():
         finished_form = filled_form.save(commit=False)
         finished_form.post = get_object_or_404(FreePost, pk=post_id)
-        finished_form.author = request.session.get('login_session', '')  
+        finished_form.author = User.objects.get(username=login_session) 
         finished_form.save()
     return redirect('freedetail', post_id)
 
