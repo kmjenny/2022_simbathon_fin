@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content%}
+
+<h1>제목 : {{ post_detail.title }}</h1>
+
+<h2>글쓴이 : {{post_detail.author}}</h2>
+
+<h2>작성 날짜 : {{ post_detail.date }}</h2>
+
+{% if login_session %}
+    {% if username == post_detail.author %}
+        <h3><a href="{% url 'postupdate' post_detail.id %}">수정하기</a></h3>
+        <h3><a href="{% url 'postdelete' post_detail.id %}">삭제하기</a></h3>
+    {% endif %}
+{% endif %}
+
+<p>
+    {{ post_detail.body }}
+</p>
+
+<p>
+성별: {{post_detail.gender}}
+<br/>
+주제: {{post_detail.topic}}
+<br/>
+모집 인원 수: {{post_detail.count}}
+</p>
+
+<br/>
+
+{% for comment in post_detail.comment_set.all %}
+    <p>{{comment.author}}</p>
+    <p>{{ comment }}</p>
+    <p>{{ comment.date }}</p>
+
+{% if login_session %}
+    {% if username == comment.author %}
+    <p><a href="{% url 'commentupdate' comment.id %}">수정하기</a></p>
+    <p><a href="{% url 'commentdelete' comment.id %}">삭제하기</a></p>
+    {% endif %} 
+{% endif %}
+    <hr>
+{% endfor %}
+
+
+{% if login_session %}
+    <form method="POST" action="{% url 'new_comment' post_detail.id %}">
+        {% csrf_token %}
+        {{ comment_form }}
+        <input type="submit" value="댓글 입력">
+    </form>
+{% endif %}
+
+
+{% endblock %}

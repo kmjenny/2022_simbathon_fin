@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Page Heading -->
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-warning">식재료 N빵하자!</h6>
+    </div>
+    <div>
+        <form action="{%url 'filterfreepost'%}">
+            {%csrf_token%}
+
+            <select name="mode" id="">
+                <option value="">선택안함</option>
+                {% for item in mode %}
+                <option value="{{item.0}}">{{item.0}}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">제출</button>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <colgroup>
+                    <col width="30%" />
+                    <col width="20%" />
+                    <col width="20%" />
+                    <col width="15%" />
+                    <col width="15%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>글 제목</th>
+                        <th>사진</th>  
+                        <th>가격</th>                 
+                        <th>작성 날짜</th>
+                        <th>작성자</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in freeposts %}
+                    <tr>
+                        <td><a href="{% url 'freedetail' post.id %}">{{ post.title }}</a></td>
+                        {% if post.image %}
+                        <td><img src="{{post.image.url}}" alt="{{post.image.name}}" width="150"></td>
+                        {% else %}
+                        <td></td>
+                        {% endif %}
+                        <td>{{post.price}}</td>
+                        <td>{{ post.date }}</td>
+                        <td>{{ post.author }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% if login_session %}
+
+<a href="{% url 'freepostcreate' %}" class="btn btn-warning btn-icon-split">
+    <span class="icon text-white-50">
+        <i class="fas fa-flag"></i>
+    </span>
+    <span class="text">글쓰기</span>
+</a>
+
+{% endif %}
+
+{% endblock %}

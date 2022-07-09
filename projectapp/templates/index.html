@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<!-- Page Heading -->
+<img src="https://postfiles.pstatic.net/MjAyMjA3MDhfMjUz/MDAxNjU3MjU4ODc1MTQz.CqPWXanZEl6A-C-fYtgvqDsyKLwqfDMaUJZ3sQ4MtbUg.8a22vPjZSew7bSlsBmONS1bObELqT394gBYXwxi3lTIg.PNG.juachef/%EB%B0%A5%EB%AC%B5%EC%9E%90_%EC%B5%9C%EC%A2%85_.png?type=w773" alt="My Image" width="150">
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-warning">같이 묵자🧐</h6>
+    </div>
+
+    <div>
+        <form action="{%url 'filterpost'%}">
+            <select name="gender" id="">
+                {% for item in gender %}
+                    <option value="{{item.0}}">{{item.0}}</option>
+                {% endfor %}
+            </select>
+    
+            <select name="count" id="">
+                <option value="상관없음">상관없음</option>
+                {% for item in count %}
+                    <option value="{{item.0}}">{{item.0}}</option>
+                {% endfor %}
+            </select>
+    
+            <select name="topic" id="">
+                <option value="상관없음">상관없음</option>
+                {% for item in topic %}
+                    <option value="{{item.0}}">{{item.0}}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">제출</button>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width='70%'>글 제목</th>
+                        <th>작성 날짜</th>
+                        <th>작성자</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <td><a href="{% url 'detail' post.id %}">{{ post.title }}</a></td>
+                        <td>{{ post.date }}</td>
+                        <td>{{ post.author }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if login_session %}
+<a href="{% url 'postcreate' %}" class="btn btn-warning btn-icon-split">
+    <span class="icon text-white-50">
+        <i class="fas fa-flag"></i>
+    </span>
+    <span class="text">글 쓰기</span>
+</a>
+{% endif %}
+
+{% endblock %}

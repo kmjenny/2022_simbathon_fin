@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content%}
+
+<form method="POST" action="{% url 'freecommentupdate' comment.id %}">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="댓글 입력">
+</form>
+
+{% endblock %}
